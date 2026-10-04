@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -14,8 +14,10 @@ const USER_KEY = 'currentUser';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http = inject(HttpClient);
+  constructor(private readonly http: HttpClient) {}
+
   private readonly url = `${environment.apiBaseUrl}/api/auth`;
+
   private readonly userState = new BehaviorSubject<UserDto | null>(
     this.readUser(),
   );
@@ -27,6 +29,7 @@ export class AuthService {
   get isAuthenticated(): boolean {
     return !!sessionStorage.getItem('jwtToken');
   }
+
   hasRole(roles: Role[] = []): boolean {
     return roles.some((role) => this.currentUser?.roles.includes(role));
   }

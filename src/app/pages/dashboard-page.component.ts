@@ -3,7 +3,20 @@ import { CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DashboardApiService } from '../api/dashboard-api.service';
 import { AuthService } from '../auth/auth.service';
-import { DashboardDto } from '../models/api.models';
+import {
+  DashboardChartPoint,
+  DashboardCharts,
+  DashboardDto,
+} from '../models/api.models';
+
+type ChartKey = keyof DashboardCharts;
+interface DashboardChartView {
+  key: ChartKey;
+  title: string;
+  description: string;
+  points: DashboardChartPoint[];
+  demo: boolean;
+}
 
 @Component({
   standalone: true,
@@ -17,6 +30,27 @@ export class DashboardPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   dashboard: DashboardDto | null = null;
   error = '';
+  private readonly demoCharts: Record<ChartKey, DashboardChartPoint[]> = {
+    productsByCategory: [
+      { label: 'Electronics', value: 8 },
+      { label: 'Home', value: 12 },
+      { label: 'Accessories', value: 6 },
+      { label: 'Lifestyle', value: 9 },
+    ],
+    productsByType: [
+      { label: 'Premium', value: 5 },
+      { label: 'Standard', value: 15 },
+    ],
+    stockByLevel: [
+      { label: 'Low (0–4)', value: 3 },
+      { label: 'Medium (5–19)', value: 10 },
+      { label: 'High (20+)', value: 7 },
+    ],
+    usersByStatus: [
+      { label: 'Enabled', value: 9 },
+      { label: 'Disabled', value: 1 },
+    ],
+  };
   get greeting(): string {
     const hour = new Date().getHours();
     return hour < 12
@@ -27,6 +61,35 @@ export class DashboardPageComponent implements OnInit {
   }
   get metricEntries(): [string, number][] {
     return Object.entries(this.dashboard?.metrics ?? {});
+  }
+  get visibleCharts(): DashboardChartView[] {
+    if (!this.dashboard) return [];
+    const chartKeys: Record<DashboardDto['dashboard'], ChartKey[]> = {
+      admin: ['productsByCategory', 'productsByType', 'stockByLevel', 'usersByStatus'],
+      moderator: ['productsByCategory', 'stockByLevel'],
+      premium: ['productsByCategory', 'productsByType'],
+      user: ['productsByCategory'],
+    };
+    const keys = chartKeys[this.dashboard.dashboard];
+    const meta: Record<ChartKey, { title: string; description: string }> = {
+      productsByCategory: { title: 'Products by category', description: 'Active catalog mix' },
+      productsByType: { title: 'Premium & standard', description: 'Active product types' },
+      stockByLevel: { title: 'Stock levels', description: 'Inventory distribution' },
+      usersByStatus: { title: 'Account status', description: 'Enabled and disabled users' },
+    };
+    return keys.map((key) => {
+      const apiPoints = this.dashboard?.charts?.[key];
+      return {
+        key,
+        ...meta[key],
+        points: apiPoints?.length ? apiPoints : this.demoCharts[key],
+        demo: !apiPoints?.length,
+      };
+    });
+  }
+  chartBarWidth(value: number, points: DashboardChartPoint[]): number {
+    const max = Math.max(...points.map((point) => point.value), 1);
+    return value > 0 ? Math.max(8, (value / max) * 100) : 0;
   }
   get roleTitle(): string {
     return (
@@ -77,8 +140,7 @@ export class DashboardPageComponent implements OnInit {
           : roles.includes('ROLE_PREMIUM_USER')
             ? 'premium'
             : 'user');
-    this.api
-      .get(kind)
+    (requested ? this.api.get(kind) : this.api.getOverview())
       .subscribe({
         next: (data) => (this.dashboard = data),
         error: (err) =>

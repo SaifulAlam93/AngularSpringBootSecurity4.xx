@@ -34,6 +34,25 @@
         </article>
       }
     </div>
+    <section class="dashboard-charts" aria-label="Dashboard charts">
+      @for (chart of visibleCharts; track chart.key) {
+        <article class="chart-card" [class]="'chart-card chart-' + chart.key">
+          <div class="chart-heading">
+            <div><p class="eyebrow">{{ chart.description }}</p><h3>{{ chart.title }}</h3></div>
+            @if (chart.demo) { <span class="demo-badge">DEMO DATA</span> }
+          </div>
+          <div class="chart-bars" role="img" [attr.aria-label]="chart.title + ' bar chart'">
+            @for (point of chart.points; track point.label) {
+              <div class="chart-row">
+                <div class="chart-label"><span>{{ point.label }}</span><strong>{{ point.value }}</strong></div>
+                <div class="chart-track"><span class="chart-fill" [style.width.%]="chartBarWidth(point.value, chart.points)"></span></div>
+              </div>
+            }
+          </div>
+          <p class="chart-note">{{ chart.demo ? 'Sample values shown until chart data is returned by the API.' : 'Aggregated across the active catalog.' }}</p>
+        </article>
+      }
+    </section>
     <div class="dashboard-section">
       <div class="section-heading">
         <div><p class="eyebrow">A GOOD PLACE TO START</p><h2>Featured products</h2></div>

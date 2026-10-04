@@ -47,6 +47,17 @@ export interface DashboardDto {
   roles: Role[];
   metrics: Record<string, number>;
   products: ProductDto[];
+  charts?: DashboardCharts;
+}
+export interface DashboardChartPoint {
+  label: string;
+  value: number;
+}
+export interface DashboardCharts {
+  productsByCategory?: DashboardChartPoint[];
+  productsByType?: DashboardChartPoint[];
+  stockByLevel?: DashboardChartPoint[];
+  usersByStatus?: DashboardChartPoint[];
 }
 export interface AdminStatisticsDto {
   [key: string]: number;

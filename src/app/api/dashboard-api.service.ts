@@ -7,6 +7,11 @@ import { DashboardDto } from '../models/api.models';
 @Injectable({ providedIn: 'root' })
 export class DashboardApiService {
   private readonly http = inject(HttpClient);
+  getOverview(): Observable<DashboardDto> {
+    return this.http.get<DashboardDto>(
+      `${environment.apiBaseUrl}/api/dashboard/data`,
+    );
+  }
   get(kind: DashboardDto['dashboard']): Observable<DashboardDto> {
     return this.http.get<DashboardDto>(
       `${environment.apiBaseUrl}/api/dashboard/${kind}`,
