@@ -1,0 +1,55 @@
+<section class="dashboard-page">
+  @if (error) {
+    <div class="notice error">{{ error }}</div>
+  } @else if (!dashboard) {
+    <p class="loading">Loading your dashboard…</p>
+  } @else {
+    <div class="dashboard-banner" [class]="'dashboard-banner role-' + dashboard.dashboard">
+      <div class="banner-copy">
+        <p class="banner-kicker"><span></span>{{ roleTitle }}</p>
+        <h1>{{ greeting }},<br />{{ auth.currentUser?.userFirstName || auth.currentUser?.userName }}.</h1>
+        <p>{{ roleDescription }}</p>
+      </div>
+      <div class="banner-art" aria-hidden="true">
+        <div class="banner-ring ring-one"></div>
+        <div class="banner-ring ring-two"></div>
+        <div class="banner-stamp">{{ roleMark }}</div>
+        <span class="banner-art-label">NORTHSTAR<br />OVERVIEW</span>
+      </div>
+      <div class="banner-foot">
+        <span>ACCOUNT</span><strong>{{ auth.currentUser?.userName }}</strong>
+        <span class="banner-divider"></span><span>ACCESS</span>
+        <strong>{{ dashboard.roles.join(' · ') }}</strong>
+      </div>
+    </div>
+    <div class="section-heading dashboard-stats-title">
+      <div><p class="eyebrow">AT A GLANCE</p><h2>{{ statsTitle }}</h2></div>
+      <span class="live-indicator"><i></i> Live account data</span>
+    </div>
+    <div class="metrics-grid">
+      @for (entry of metricEntries; track entry[0]; let index = $index) {
+        <article class="metric-card">
+          <div class="metric-top"><span>{{ metricLabel(entry[0]) }}</span><b>{{ metricMark(index) }}</b></div>
+          <strong>{{ entry[1] }}</strong><small>{{ metricHint(entry[0]) }}</small>
+        </article>
+      }
+    </div>
+    <div class="dashboard-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">A GOOD PLACE TO START</p><h2>Featured products</h2></div>
+        <a class="text-link" routerLink="/">Browse catalog <span>→</span></a>
+      </div>
+      <div class="dashboard-products">
+        @for (product of dashboard.products; track product.id) {
+          <article>
+            <span class="mini-category">{{ product.category }}</span>
+            <div><h3>{{ product.name }}</h3><p>{{ product.description || 'Discover this Northstar favorite.' }}</p></div>
+            <strong>{{ product.price | currency }}</strong>
+          </article>
+        } @empty {
+          <p class="muted">No featured products to show.</p>
+        }
+      </div>
+    </div>
+  }
+</section>

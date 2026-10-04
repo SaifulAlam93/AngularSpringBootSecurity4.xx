@@ -1,0 +1,36 @@
+<section class="catalog-page">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">CURATED FOR EVERY DAY</p>
+      <h1>Good things,<br /><em>thoughtfully chosen.</em></h1>
+      <p class="hero-copy">Discover practical favorites selected to make the everyday a little better.</p>
+      <a class="hero-link" routerLink="/signup">Join Northstar <span>→</span></a>
+    </div>
+    <div class="hero-art"><div class="sun"></div><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="art-label">OBJECTS FOR<br />BETTER LIVING</div></div>
+  </div>
+  <div class="section-heading">
+    <div><p class="eyebrow">THE COLLECTION</p><h2>Explore products</h2></div>
+    <span>{{ products.length }} items</span>
+  </div>
+  @if (error) { <p class="notice error">{{ error }}</p> }
+  @else if (!loaded) { <p class="loading">Loading the collection…</p> }
+  @else if (!products.length) { <p class="loading">No products are available right now.</p> }
+  @else {
+    <div class="product-grid">
+      @for (product of products; track product.id) {
+        <article class="product-card">
+          <div class="product-image" [class.has-image]="product.imageUrl" [style.background-image]="product.imageUrl ? 'url(' + product.imageUrl + ')' : null">
+            <span class="product-category">{{ product.category }}</span>
+            @if (product.premium) { <span class="premium-tag">MEMBERS</span> }
+            @if (!product.imageUrl) { <span class="product-initial">{{ product.name.charAt(0) }}</span> }
+          </div>
+          <div class="product-info">
+            <div><h3>{{ product.name }}</h3><p>{{ product.description || 'A considered addition to your everyday.' }}</p></div>
+            <strong>{{ product.price | currency }}</strong>
+          </div>
+          <div class="product-meta"><span>{{ product.stock > 0 ? 'In stock' : 'Out of stock' }}</span><a *ngIf="product.premium" routerLink="/login">Explore <span>→</span></a></div>
+        </article>
+      }
+    </div>
+  }
+</section>

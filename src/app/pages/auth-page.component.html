@@ -1,0 +1,29 @@
+<section class="auth-layout">
+  <div class="auth-story">
+    <p class="eyebrow">NORTHSTAR COMMERCE</p>
+    <h1>{{ signup ? 'A better way to shop.' : 'Welcome back.' }}</h1>
+    <p>Sign in to explore your account, discover products and access the tools assigned to your role.</p>
+    <div class="story-mark">N<span>+</span></div>
+    <small>One account. The right access.</small>
+  </div>
+  <div class="auth-card">
+    <p class="eyebrow">{{ signup ? 'GET STARTED' : 'YOUR ACCOUNT' }}</p>
+    <h2>{{ signup ? 'Create your account' : 'Sign in' }}</h2>
+    <p class="muted">{{ signup ? 'Your next favorite is waiting.' : 'Enter your credentials to continue.' }}</p>
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>Username<input formControlName="username" autocomplete="username" placeholder="Your username" /></label>
+      @if (signup) {
+        <label>Email<input formControlName="email" type="email" autocomplete="email" placeholder="you@example.com" /></label>
+        <div class="form-row">
+          <label>First name<input formControlName="firstName" autocomplete="given-name" placeholder="Alex" /></label>
+          <label>Last name<input formControlName="lastName" autocomplete="family-name" placeholder="Morgan" /></label>
+        </div>
+      }
+      <label>Password<input formControlName="password" type="password" [attr.autocomplete]="signup ? 'new-password' : 'current-password'" [placeholder]="signup ? 'At least 8 characters' : 'Your password'" /></label>
+      @if (error) { <p class="notice error">{{ error }}</p> }
+      @if (message) { <p class="notice success">{{ message }} Sign in to continue.</p> }
+      <button class="primary-button" type="submit" [disabled]="form.invalid || busy">{{ busy ? 'Please wait…' : signup ? 'Create account' : 'Sign in' }} <span>→</span></button>
+    </form>
+    <p class="switch-mode">{{ signup ? 'Already have an account?' : 'New to Northstar?' }} <a [routerLink]="signup ? '/login' : '/signup'">{{ signup ? 'Sign in' : 'Create an account' }}</a></p>
+  </div>
+</section>
