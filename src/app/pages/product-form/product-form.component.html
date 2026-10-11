@@ -1,0 +1,123 @@
+
+<div class="container mt-4">
+
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <h3 class="mb-0">
+        {{ isEdit ? 'Edit Product' : 'Add Product' }}
+      </h3>
+    </div>
+
+    <div class="card-body">
+
+      <div *ngIf="loading" class="alert alert-info">
+        Loading product...
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <form [formGroup]="productForm"
+            (ngSubmit)="save()"
+            *ngIf="!loading">
+
+        <div class="row">
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Product Name *</label>
+            <input type="text" class="form-control"
+                   formControlName="name">
+
+            <small class="text-danger"
+              *ngIf="productForm.controls.name.touched &&
+                     productForm.controls.name.invalid">
+              Product name is required.
+            </small>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Category *</label>
+            <input type="text" class="form-control"
+                   formControlName="category">
+
+            <small class="text-danger"
+              *ngIf="productForm.controls.category.touched &&
+                     productForm.controls.category.invalid">
+              Category is required.
+            </small>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Price *</label>
+            <input type="number" class="form-control"
+                   formControlName="price" min="0">
+
+            <small class="text-danger"
+              *ngIf="productForm.controls.price.touched &&
+                     productForm.controls.price.invalid">
+              Enter a valid price (0 or greater).
+            </small>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Stock *</label>
+            <input type="number" class="form-control"
+                   formControlName="stock" min="0">
+
+            <small class="text-danger"
+              *ngIf="productForm.controls.stock.touched &&
+                     productForm.controls.stock.invalid">
+              Stock must be 0 or greater.
+            </small>
+          </div>
+
+          <div class="col-12 mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="3"
+                      formControlName="description"></textarea>
+          </div>
+
+          <div class="col-12 mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="text" class="form-control"
+                   formControlName="imageUrl"
+                   placeholder="https://example.com/product.jpg">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input"
+                     id="active" formControlName="active">
+              <label class="form-check-label" for="active">
+                Active
+              </label>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input"
+                     id="premium" formControlName="premium">
+              <label class="form-check-label" for="premium">
+                Premium Product
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary me-2"
+                [disabled]="saving">
+          {{ saving ? 'Saving...' : (isEdit ? 'Update' : 'Save') }}
+        </button>
+
+        <a routerLink="/products" class="btn btn-secondary">
+          Cancel
+        </a>
+
+      </form>
+    </div>
+  </div>
+
+</div>

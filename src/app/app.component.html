@@ -7,6 +7,13 @@
       [routerLinkActiveOptions]="{ exact: true }"
       >Catalog</a
     >
+
+    <a
+      routerLink="/products"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Products</a
+    >
     @if (auth.isAuthenticated) {
       <a routerLink="/dashboard">Dashboard</a>
       @if (canAccess(["ROLE_MODERATOR", "ROLE_ADMIN"])) {

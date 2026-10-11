@@ -3,6 +3,9 @@ import { authGuard, roleGuard } from './auth/auth.guard';
 import { AuthPageComponent } from './pages/auth-page.component';
 import { CatalogPageComponent } from './pages/catalog-page.component';
 import { DashboardPageComponent } from './pages/dashboard-page.component';
+import { ProductListComponent } from './pages/product-list/product-list.component';
+import { ProductFormComponent } from './pages/product-form/product-form.component';
+import { ProductViewComponent } from './pages/product-view/product-view.component';
 
 export const routes: Routes = [
   { path: '', component: CatalogPageComponent },
@@ -31,5 +34,22 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { dashboard: 'premium', roles: ['ROLE_PREMIUM_USER'] },
   },
+
+  {
+    path: 'products',
+    component: ProductListComponent,
+  },
+  {
+    path: 'products/new',
+    component: ProductFormComponent,
+  }, {
+    path: 'products/edit/:id',
+    component: ProductFormComponent,
+  }, {
+    path: 'products/view/:id',
+    component: ProductViewComponent,
+  },
+
+
   { path: '**', redirectTo: '' },
 ];

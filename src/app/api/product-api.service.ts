@@ -6,18 +6,23 @@ import { ProductDto } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductApiService {
+
   private readonly http = inject(HttpClient);
+
   private readonly url = `${environment.apiBaseUrl}/api/products`;
-  list(): Observable<ProductDto[]> {
+
+  list() {
     return this.http.get<ProductDto[]>(this.url);
   }
-  get(id: number): Observable<ProductDto> {
+
+  get(id: number) {
     return this.http.get<ProductDto>(`${this.url}/${id}`);
   }
-  getPremium(): Observable<ProductDto[]> {
+
+  getPremium() {
     return this.http.get<ProductDto[]>(`${this.url}/premium`);
   }
-  create(product: ProductDto): Observable<ProductDto> {
+  create(product: ProductDto) {
     return this.http.post<ProductDto>(this.url, product);
   }
   update(id: number, product: ProductDto): Observable<ProductDto> {

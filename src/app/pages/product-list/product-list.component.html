@@ -1,0 +1,89 @@
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Product List</h3>
+        @if (auth.isAuthenticated) {
+        @if (canAccess(["ROLE_ADMIN","ROLE_MODERATOR"])) {
+        <button class="btn btn-primary" (click)="addProduct()">
+            + Add Product
+        </button>
+        }
+        }
+
+    </div>
+
+    <div *ngIf="loading" class="alert alert-info">
+        Loading products...
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && products.length">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Active</th>
+                    <th>Premium</th>
+                    @if (auth.isAuthenticated) {
+                    <th style="width: 200px">Actions</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let p of products">
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.category }}</td>
+                    <td>{{ p.price | currency:'BDT ':'symbol':'1.2-2' }}</td>
+                    <td>{{ p.stock }}</td>
+
+                    <td>
+                        <span class="badge" [class.bg-success]="p.active" [class.bg-secondary]="!p.active">
+                            {{ p.active ? 'Yes' : 'No' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="badge" [class.bg-warning]="p.premium" [class.bg-secondary]="!p.premium">
+                            {{ p.premium ? 'Yes' : 'No' }}
+                        </span>
+                    </td>
+                    @if (auth.isAuthenticated) {
+                    <td>
+                        @if (canAccess(["ROLE_ADMIN","ROLE_MODERATOR","ROLE_PREMIUM_USER","ROLE_USER","ROLE_EMPLOYEE"]))
+                        {
+                        <button class="btn btn-sm btn-info me-1" (click)="viewProduct(p.id!)">
+                            View
+                        </button>
+                        }
+                        @if (canAccess(["ROLE_ADMIN","ROLE_MODERATOR"]))
+                        {
+                        <button class="btn btn-sm btn-warning me-1" (click)="editProduct(p.id!)">
+                            Edit
+                        </button>
+                        }
+                        @if (canAccess(["ROLE_ADMIN"]))
+                        {
+                        <button class="btn btn-sm btn-danger" (click)="deleteProduct(p.id!)">
+                            Delete
+                        </button>}
+                    </td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="!loading && !error && products.length === 0" class="alert alert-warning">
+        No products found.
+    </div>
+
+</div>
